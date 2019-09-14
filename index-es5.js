@@ -2,14 +2,14 @@
  * Implementation 
  */
 
- // Get the type of whatever is supplied as the argument
+// Get the type of whatever is supplied as the argument
 function getType(thing) { return Object.prototype.toString.call(thing); }
 
 // Checks if the substring incStr is included in the string str
 function hasSubString(str, incStr) { return str.toLowerCase().includes(incStr); }
- 
+
 // Checks if the supplied argument is an array
-function isArray(arrCandidate) { 
+function isArray(arrCandidate) {
 	var typeInfo = getType(arrCandidate);
 	return hasSubString(typeInfo, 'array');
 }
@@ -39,14 +39,14 @@ function Basket(pricingRules) {
      * @param { Array.<PromotionFunction> } pricingRules.promotions - Promotion array.
      */
 	if (!pricingRules.hasOwnProperty('products') || !isArray(pricingRules.products)) {
-        throw new Error('Need an array of products (Format: productCode, name, price) see: wiki');
-    }
+		throw new Error('Need an array of products (Format: productCode, name, price) see: wiki');
+	}
 
 	if (pricingRules.hasOwnProperty('promotions') && !isArray(pricingRules.promotions)) {
-	    throw new Error('Promotions need to be an array see: wiki');
-    }
+		throw new Error('Promotions need to be an array see: wiki');
+	}
 
-    // Set up the state of the basket
+	// Set up the state of the basket
 	this.products = pricingRules.products;
 	this.promotions = pricingRules.promotions;
 	this.items = []; // empty basket
@@ -69,31 +69,31 @@ Basket.prototype.total = function () {
 	var initialSavings = 0.0;
 	var that = this;
 
-	var price =  this.items.reduce(calcPrice, initialTotal);
+	var price = this.items.reduce(calcPrice, initialTotal);
 	var savings = this.promotions.reduce(addPromotion, initialSavings);
 	var finalPrice = price - savings;
 
 	return finalPrice;
 
-    // Internal functions
+	// Internal functions
 	function addPromotion(totalDiscount, currentPromoFn) {
-		return totalDiscount + currentPromoFn(this.basket.items, this.basket.products);
+		return totalDiscount + currentPromoFn(that.items, that.products);
 	}
 
 	function calcPrice(totalPrice, currentItem) {
 		// look for item
-		var product = that.products.find(function(prod) { return prod.productCode === currentItem });
+		var product = that.products.find(function (prod) { return prod.productCode === currentItem });
 		if (!product) throw new Error('Unfound product: ', currentItem);
 
 		// get the price
-		var price = product.price; 
+		var price = product.price;
 
 		// add the price to the current total
 		var updatedPrice = totalPrice + price;
 
 		// return updated total
 		return updatedPrice;
-    }
+	}
 };
 
 /**
@@ -111,7 +111,7 @@ Basket.prototype.addArray = function (items) {
 	else if (isArray(items)) addedItems = items;
 	else throw new Error('Need to add an array of product codes or a comma separated list of product codes');
 
-    // addeditems will be an array by this point. Now we move those items into the items member variable.
+	// addeditems will be an array by this point. Now we move those items into the items member variable.
 	addedItems.forEach(function (item) { that.items.push(item); });
 };
 
@@ -133,21 +133,21 @@ Basket.prototype.clearItems = function () {
 
 // Promotion function: Buy One Get One Free Fruit Tea
 function buyOneGetOneFreeFruitTea(basketItems, itemsDb) {
-    // make sure the item is still in the products for sale
-    var fruitTeaInfo = itemsDb.find(productFruitTeaPredicate);
-    var discount = 0;
-    
-    // If the item is being sold apply the deal: Important in the case of withdrawn items
-    if (fruitTeaInfo) {
-        // calculate the shoppers earned deals.
-        // Filter to get all that they've got and floor to calc per bogof deal
-        var fruitTeas = basketItems.filter(itemFruitTeaPredicate);
-        var applicableBOGOFs = Math.floor(fruitTeas.length/2);
+	// make sure the item is still in the products for sale
+	var fruitTeaInfo = itemsDb.find(productFruitTeaPredicate);
+	var discount = 0;
 
-        // calculate savings for this deal
-        var discount = applicableBOGOFs * fruitTeaInfo.price;
-    }
-	
+	// If the item is being sold apply the deal: Important in the case of withdrawn items
+	if (fruitTeaInfo) {
+		// calculate the shoppers earned deals.
+		// Filter to get all that they've got and floor to calc per bogof deal
+		var fruitTeas = basketItems.filter(itemFruitTeaPredicate);
+		var applicableBOGOFs = Math.floor(fruitTeas.length / 2);
+
+		// calculate savings for this deal
+		var discount = applicableBOGOFs * fruitTeaInfo.price;
+	}
+
 	return discount;
 
 	// helper
@@ -160,17 +160,17 @@ function bulkBuyStrawberries(basketItems, itemsDb) {
 	// get the item details
 	var strawberryInfo = itemsDb.find(productStrawberryPredicate);
 	var discount = 0;
-    
-    // if the item is still available for sale apply the reduction
-    if (strawberryInfo) {
-        // calculate the shoppers earned deals.
-        // Filter to get all that they've got and floor to calc per bogof deal
-        var strawberries = basketItems.filter(itemFruitTeaPredicate);
-        
-        // calculate savings for this deal
-        if (strawberries.length >= 3) discount = 0.5 * strawberries.length;
-    }
-	
+
+	// if the item is still available for sale apply the reduction
+	if (strawberryInfo) {
+		// calculate the shoppers earned deals.
+		// Filter to get all that they've got and floor to calc per bogof deal
+		var strawberries = basketItems.filter(itemFruitTeaPredicate);
+
+		// calculate savings for this deal
+		if (strawberries.length >= 3) discount = 0.5 * strawberries.length;
+	}
+
 	return discount;
 
 	// internal functions 

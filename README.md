@@ -23,3 +23,4 @@ We could extend the arguments to allow the promotions to be based on other crite
 The product list currently resides in the basket, however in the future this would likely become its own class. Because of the functional approach used here, it would be easy to split this out into its own class.
 
 
+To run this file, enter the command line (bash/git-bash) and run `node index.js` or `node index-es5.js` alternatively you could paste the code into developer tools console.

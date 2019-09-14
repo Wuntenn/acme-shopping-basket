@@ -10,46 +10,46 @@ function hasSubString(str, incStr) { return str.toLowerCase().includes(incStr); 
 
 // Checks if the supplied argument is an array
 function isArray(arrCandidate) {
-	var typeInfo = getType(arrCandidate);
-	return hasSubString(typeInfo, 'array');
+  var typeInfo = getType(arrCandidate);
+  return hasSubString(typeInfo, 'array');
 }
 
 /** Basket: Configured this way to match the specified interface */
 function Basket(pricingRules) {
-    /**
-     * Description of promotion functions
-     * eg: function fooPromo(basketItems, itemsDb)
-     * @name PromotionFunction
-     * @function
-     * @param { Array.<String> } basketItems - items in the basket
-     * @param { Array.<{ productCode: String, name: String, price: Number}> } itemDb - A copy of the product array
-     */
+  /**
+   * Description of promotion functions
+   * eg: function fooPromo(basketItems, itemsDb)
+   * @name PromotionFunction
+   * @function
+   * @param { Array.<String> } basketItems - items in the basket
+   * @param { Array.<{ productCode: String, name: String, price: Number}> } itemDb - A copy of the product array
+   */
 
 
-    /**
-     * Create a basket by supplying the constuctor with an object. This object should contain the attributes 'products'
-     * where products is the key relating to an array of product objects with productCode(string), name(sting), and price(number)
-     * attributes.
-     * 
-     * Optionally a 'promotions' attribute can be added to the pricingRules object. In this case the promotions key relates
-     * to an array of promotion functions. These are function that take the basket items and items list as their argument
-     * and return a numerical amount representing the discount to be deducted from the total cost.
-     * 
-     * @param { Array.<{ productCode: String, name: String, price: Number}> } pricingRules.products - Product Array 
-     * @param { Array.<PromotionFunction> } pricingRules.promotions - Promotion array.
-     */
-	if (!pricingRules.hasOwnProperty('products') || !isArray(pricingRules.products)) {
-		throw new Error('Need an array of products (Format: productCode, name, price) see: wiki');
-	}
+  /**
+   * Create a basket by supplying the constuctor with an object. This object should contain the attributes 'products'
+   * where products is the key relating to an array of product objects with productCode(string), name(sting), and price(number)
+   * attributes.
+   * 
+   * Optionally a 'promotions' attribute can be added to the pricingRules object. In this case the promotions key relates
+   * to an array of promotion functions. These are function that take the basket items and items list as their argument
+   * and return a numerical amount representing the discount to be deducted from the total cost.
+   * 
+   * @param { Array.<{ productCode: String, name: String, price: Number}> } pricingRules.products - Product Array 
+   * @param { Array.<PromotionFunction> } pricingRules.promotions - Promotion array.
+   */
+  if (!pricingRules.hasOwnProperty('products') || !isArray(pricingRules.products)) {
+    throw new Error('Need an array of products (Format: productCode, name, price) see: wiki');
+  }
 
-	if (pricingRules.hasOwnProperty('promotions') && !isArray(pricingRules.promotions)) {
-		throw new Error('Promotions need to be an array see: wiki');
-	}
+  if (pricingRules.hasOwnProperty('promotions') && !isArray(pricingRules.promotions)) {
+    throw new Error('Promotions need to be an array see: wiki');
+  }
 
-	// Set up the state of the basket
-	this.products = pricingRules.products;
-	this.promotions = pricingRules.promotions;
-	this.items = []; // empty basket
+  // Set up the state of the basket
+  this.products = pricingRules.products;
+  this.promotions = pricingRules.promotions;
+  this.items = []; // empty basket
 }
 
 /**
@@ -57,7 +57,7 @@ function Basket(pricingRules) {
  * @param { String } item - product code representing item to be added. Product must exist in the 'products' member variable
 */
 Basket.prototype.add = function (item) {
-	this.items.push(item);
+  this.items.push(item);
 };
 
 /**
@@ -65,35 +65,35 @@ Basket.prototype.add = function (item) {
  * @return { Number } The total cost of the items in the basket incl promotion deductions
  */
 Basket.prototype.total = function () {
-	var initialTotal = 0.0;
-	var initialSavings = 0.0;
-	var that = this;
+  var initialTotal = 0.0;
+  var initialSavings = 0.0;
+  var that = this;
 
-	var price = this.items.reduce(calcPrice, initialTotal);
-	var savings = this.promotions.reduce(addPromotion, initialSavings);
-	var finalPrice = price - savings;
+  var price = this.items.reduce(calcPrice, initialTotal);
+  var savings = this.promotions.reduce(addPromotion, initialSavings);
+  var finalPrice = price - savings;
 
-	return finalPrice;
+  return finalPrice;
 
-	// Internal functions
-	function addPromotion(totalDiscount, currentPromoFn) {
-		return totalDiscount + currentPromoFn(that.items, that.products);
-	}
+  // Internal functions
+  function addPromotion(totalDiscount, currentPromoFn) {
+    return totalDiscount + currentPromoFn(that.items, that.products);
+  }
 
-	function calcPrice(totalPrice, currentItem) {
-		// look for item
-		var product = that.products.find(function (prod) { return prod.productCode === currentItem });
-		if (!product) throw new Error('Unfound product: ', currentItem);
+  function calcPrice(totalPrice, currentItem) {
+    // look for item
+    var product = that.products.find(function (prod) { return prod.productCode === currentItem });
+    if (!product) throw new Error('Unfound product: ', currentItem);
 
-		// get the price
-		var price = product.price;
+    // get the price
+    var price = product.price;
 
-		// add the price to the current total
-		var updatedPrice = totalPrice + price;
+    // add the price to the current total
+    var updatedPrice = totalPrice + price;
 
-		// return updated total
-		return updatedPrice;
-	}
+    // return updated total
+    return updatedPrice;
+  }
 };
 
 /**
@@ -105,21 +105,21 @@ Basket.prototype.total = function () {
 * @param { Array.<String> } items - Array of product codes representing the items to add to the basket
 */
 Basket.prototype.addArray = function (items) {
-	var addedItems;
-	var that = this;
-	if (arguments.length > 1) addedItems = Array.prototype.slice.call(arguments, 0);
-	else if (isArray(items)) addedItems = items;
-	else throw new Error('Need to add an array of product codes or a comma separated list of product codes');
+  var addedItems;
+  var that = this;
+  if (arguments.length > 1) addedItems = Array.prototype.slice.call(arguments, 0);
+  else if (isArray(items)) addedItems = items;
+  else throw new Error('Need to add an array of product codes or a comma separated list of product codes');
 
-	// addeditems will be an array by this point. Now we move those items into the items member variable.
-	addedItems.forEach(function (item) { that.items.push(item); });
+  // addeditems will be an array by this point. Now we move those items into the items member variable.
+  addedItems.forEach(function (item) { that.items.push(item); });
 };
 
 /**
  * Convenience method to remote all the items from the basket
  */
 Basket.prototype.clearItems = function () {
-	this.items = [];
+  this.items = [];
 };
 
 /**
@@ -133,70 +133,70 @@ Basket.prototype.clearItems = function () {
 
 // Promotion function: Buy One Get One Free Fruit Tea
 function buyOneGetOneFreeFruitTea(basketItems, itemsDb) {
-	// make sure the item is still in the products for sale
-	var fruitTeaInfo = itemsDb.find(productFruitTeaPredicate);
-	var discount = 0;
+  // make sure the item is still in the products for sale
+  var fruitTeaInfo = itemsDb.find(productFruitTeaPredicate);
+  var discount = 0;
 
-	// If the item is being sold apply the deal: Important in the case of withdrawn items
-	if (fruitTeaInfo) {
-		// calculate the shoppers earned deals.
-		// Filter to get all that they've got and floor to calc per bogof deal
-		var fruitTeas = basketItems.filter(itemFruitTeaPredicate);
-		var applicableBOGOFs = Math.floor(fruitTeas.length / 2);
+  // If the item is being sold apply the deal: Important in the case of withdrawn items
+  if (fruitTeaInfo) {
+    // calculate the shoppers earned deals.
+    // Filter to get all that they've got and floor to calc per bogof deal
+    var fruitTeas = basketItems.filter(itemFruitTeaPredicate);
+    var applicableBOGOFs = Math.floor(fruitTeas.length / 2);
 
-		// calculate savings for this deal
-		var discount = applicableBOGOFs * fruitTeaInfo.price;
-	}
+    // calculate savings for this deal
+    var discount = applicableBOGOFs * fruitTeaInfo.price;
+  }
 
-	return discount;
+  return discount;
 
-	// helper
-	function productFruitTeaPredicate(product) { return product.productCode === 'FR1'; }
-	function itemFruitTeaPredicate(item) { return item === 'FR1'; }
+  // helper
+  function productFruitTeaPredicate(product) { return product.productCode === 'FR1'; }
+  function itemFruitTeaPredicate(item) { return item === 'FR1'; }
 }
 
 // Promotion function: Bulk deal price when buying more than 3 strawberries
 function bulkBuyStrawberries(basketItems, itemsDb) {
-	// get the item details
-	var strawberryInfo = itemsDb.find(productStrawberryPredicate);
-	var discount = 0;
+  // get the item details
+  var strawberryInfo = itemsDb.find(productStrawberryPredicate);
+  var discount = 0;
 
-	// if the item is still available for sale apply the reduction
-	if (strawberryInfo) {
-		// calculate the shoppers earned deals.
-		// Filter to get all that they've got and floor to calc per bogof deal
-		var strawberries = basketItems.filter(itemFruitTeaPredicate);
+  // if the item is still available for sale apply the reduction
+  if (strawberryInfo) {
+    // calculate the shoppers earned deals.
+    // Filter to get all that they've got and floor to calc per bogof deal
+    var strawberries = basketItems.filter(itemFruitTeaPredicate);
 
-		// calculate savings for this deal
-		if (strawberries.length >= 3) discount = 0.5 * strawberries.length;
-	}
+    // calculate savings for this deal
+    if (strawberries.length >= 3) discount = 0.5 * strawberries.length;
+  }
 
-	return discount;
+  return discount;
 
-	// internal functions 
-	function productStrawberryPredicate(product) { return product.productCode === 'SR1'; }
-	function itemFruitTeaPredicate(item) { return item === 'SR1'; }
+  // internal functions 
+  function productStrawberryPredicate(product) { return product.productCode === 'SR1'; }
+  function itemFruitTeaPredicate(item) { return item === 'SR1'; }
 }
 
 // pricing rules object adding the two promotion functions above
 var pricingRules = {
-	products: [{
-		productCode: 'FR1',
-		name: 'Fruit tea',
-		price: 3.11,
-	}, {
-		productCode: 'SR1',
-		name: 'Strawberries',
-		price: 5.00,
-	}, {
-		productCode: 'CF1',
-		name: 'Coffee',
-		price: 11.23,
-	}],
-	promotions: [
-		buyOneGetOneFreeFruitTea,
-		bulkBuyStrawberries
-	]
+  products: [{
+    productCode: 'FR1',
+    name: 'Fruit tea',
+    price: 3.11,
+  }, {
+    productCode: 'SR1',
+    name: 'Strawberries',
+    price: 5.00,
+  }, {
+    productCode: 'CF1',
+    name: 'Coffee',
+    price: 11.23,
+  }],
+  promotions: [
+    buyOneGetOneFreeFruitTea,
+    bulkBuyStrawberries
+  ]
 };
 
 // Test setup

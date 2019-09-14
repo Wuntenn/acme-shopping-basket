@@ -14,7 +14,7 @@ function isArray(arrCandidate) {
   return hasSubString(typeInfo, 'array');
 }
 
-/** Basket: Configured this way to match the specified interface */
+/* Basket: Configured this way to match the specified interface */
 function Basket(pricingRules) {
   /**
    * Description of promotion functions
@@ -55,7 +55,7 @@ function Basket(pricingRules) {
 /**
  * Add an Item
  * @param { String } item - product code representing item to be added. Product must exist in the 'products' member variable
-*/
+ */
 Basket.prototype.add = function (item) {
   this.items.push(item);
 };
@@ -101,9 +101,9 @@ Basket.prototype.total = function () {
  */
 
 /**
-* Convenience method to add multiple items to the basket. Use an array or comma-separted list of item codes 
-* @param { Array.<String> } items - Array of product codes representing the items to add to the basket
-*/
+ * Convenience method to add multiple items to the basket. Use an array or comma-separted list of item codes 
+ * @param { Array.<String> } items - Array of product codes representing the items to add to the basket
+ */
 Basket.prototype.addArray = function (items) {
   var addedItems;
   var that = this;
@@ -123,8 +123,8 @@ Basket.prototype.clearItems = function () {
 };
 
 /**
-* Test begins!
-*/
+ * Test begins!
+ */
 
 // promotions can be based on the items in the basket
 // In the future we may add the basket price to allow deals

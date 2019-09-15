@@ -1,4 +1,4 @@
-# ubuntu-shopping-basket
+# acme-shopping-basket
 
 I've submitted two versions of the test one targetting ES5 (`index-es5.js`) and the other ES6(`index.js`) my main submission.
 

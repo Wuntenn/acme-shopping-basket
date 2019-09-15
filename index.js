@@ -40,11 +40,11 @@ class Basket {
    */
   constructor(pricingRules) {
     if (!pricingRules.hasOwnProperty('products') || !isArray(pricingRules.products)) {
-      throw new Error('Need an array of products (Format: productCode, name, price) see: wiki');
+      throw new Error('Need an array of products (Format: productCode, name, price) see: wiki: https://github.com/Wuntenn/acme-shopping-basket/wiki/Pricing-Rules#products');
     }
 
     if (pricingRules.hasOwnProperty('promotions') && !isArray(pricingRules.promotions)) {
-      throw new Error('Promotions need to be an array see: wiki');
+      throw new Error('Promotions need to be an array see: wiki: https://github.com/Wuntenn/acme-shopping-basket/wiki/Pricing-Rules#promotions');
     }
 
     // Set up the state of the basket
@@ -69,7 +69,7 @@ class Basket {
     let price = this.items.reduce((totalPrice, currentItem) => {
       // look for item
       let product = this.products.find((prod) => prod.productCode === currentItem);
-      if (!product) throw new Error('Unfound product: ', currentItem);
+      if (!product) throw new Error('Unfound product: ', currentItem, ' please see wiki: https://github.com/Wuntenn/acme-shopping-basket/wiki/total()');
 
       // get the price
       let price = product.price;
@@ -103,7 +103,8 @@ class Basket {
     let addedItems;
     if (arguments.length > 1) addedItems = Array.prototype.slice.call(arguments, 0);
     else if (isArray(items)) addedItems = items;
-    else throw new Error('Need to add an array of product codes or a comma separated list of product codes');
+    else throw new Error('Need to add an array of product codes or a comma separated list of product codes. \
+      See wiki: https://github.com/Wuntenn/acme-shopping-basket/wiki/addArray()-method');
 
     // addeditems will be an array by this point. Now we move those items into the items member variable.
     addedItems.forEach(item => this.items.push(item));

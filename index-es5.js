@@ -39,11 +39,11 @@ function Basket(pricingRules) {
    * @param { Array.<PromotionFunction> } pricingRules.promotions - Promotion array.
    */
   if (!pricingRules.hasOwnProperty('products') || !isArray(pricingRules.products)) {
-    throw new Error('Need an array of products (Format: productCode, name, price) see: wiki');
+    throw new Error('Need an array of products (Format: productCode, name, price) see: wiki: https://github.com/Wuntenn/acme-shopping-basket/wiki/Pricing-Rules#products');
   }
 
   if (pricingRules.hasOwnProperty('promotions') && !isArray(pricingRules.promotions)) {
-    throw new Error('Promotions need to be an array see: wiki');
+    throw new Error('Promotions need to be an array see: wiki: https://github.com/Wuntenn/acme-shopping-basket/wiki/Pricing-Rules#promotions');
   }
 
   // Set up the state of the basket
@@ -83,7 +83,7 @@ Basket.prototype.total = function () {
   function calcPrice(totalPrice, currentItem) {
     // look for item
     var product = that.products.find(function (prod) { return prod.productCode === currentItem });
-    if (!product) throw new Error('Unfound product: ', currentItem);
+    if (!product) throw new Error('Unfound product: ', currentItem, ' please see wiki: https://github.com/Wuntenn/acme-shopping-basket/wiki/total()');
 
     // get the price
     var price = product.price;
@@ -109,7 +109,8 @@ Basket.prototype.addArray = function (items) {
   var that = this;
   if (arguments.length > 1) addedItems = Array.prototype.slice.call(arguments, 0);
   else if (isArray(items)) addedItems = items;
-  else throw new Error('Need to add an array of product codes or a comma separated list of product codes');
+  else throw new Error('Need to add an array of product codes or a comma separated list of product codes. \
+      See wiki: https://github.com/Wuntenn/acme-shopping-basket/wiki/addArray()-method');
 
   // addeditems will be an array by this point. Now we move those items into the items member variable.
   addedItems.forEach(function (item) { that.items.push(item); });
